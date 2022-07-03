@@ -13,7 +13,7 @@ public class Bow : RangedWeapon
     [SerializeField] string projectileName;
     protected Projectile projectile;
 
-    const float duration = 1.5f;
+    const float duration = 1f;
     protected float currentDuration = -1f;
 
     void Awake()

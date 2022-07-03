@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Firebolt
   m_EditorClassIdentifier: 
   itemName: Firebolt
-  damage: 50
+  damage: 25
   range: 0

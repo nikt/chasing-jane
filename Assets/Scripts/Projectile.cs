@@ -8,7 +8,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] float speed;
     [SerializeField] float maxDuration;
 
-    Collider shooter;
+    protected Collider shooter;
     float damage = 0f;
 
     float duration = 0f;
@@ -16,8 +16,8 @@ public class Projectile : MonoBehaviour
 
     bool hasFinished = false;
 
-    PhotonView PV;
-    Rigidbody rb;
+    protected PhotonView PV;
+    protected Rigidbody rb;
 
     void Awake()
     {
@@ -74,14 +74,22 @@ public class Projectile : MonoBehaviour
 
     void FixedUpdate()
     {
+        MyFixedUpdate();
+    }
+
+    // returns false when exiting early
+    protected virtual bool MyFixedUpdate()
+    {
         if (!PV.IsMine || !shooter)
         {
             // don't control someone elses projectile
-            return;
+            return false;
         }
 
         // rotate to mtach movement
         transform.rotation = Quaternion.LookRotation(rb.velocity);
+
+        return true;
     }
 
     public bool HasFinished()

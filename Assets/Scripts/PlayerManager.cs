@@ -32,7 +32,7 @@ public class PlayerManager : MonoBehaviour
         Debug.Log("creating controller for: " + roleName);
 
         string controllerName = roleName + "Controller";
-        if (roleName == "Observer" || roleName == "Jane" || roleName == "Zarathok")
+        if (roleName == "Observer" || roleName == "Zarathok")
         {
             controllerName = "PlayerController";
         }
