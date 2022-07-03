@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Realtime;
 using Photon.Pun;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class Scoreboard : MonoBehaviourPunCallbacks
 {
@@ -54,5 +55,29 @@ public class Scoreboard : MonoBehaviourPunCallbacks
     {
         Destroy(scoreboardItems[player].gameObject);
         scoreboardItems.Remove(player);
+    }
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    {
+        // sync player stats
+        if (scoreboardItems.ContainsKey(targetPlayer))
+        {
+            ScoreboardItem item = scoreboardItems[targetPlayer];
+
+            if (changedProps.ContainsKey("deaths"))
+            {
+                item.deathsText.text = "" + (int)changedProps["deaths"];
+            }
+
+            if (changedProps.ContainsKey("kills"))
+            {
+                item.deathsText.text = "" + (int)changedProps["kills"];
+            }
+
+            if (changedProps.ContainsKey("time"))
+            {
+                item.deathsText.text = "" + (int)changedProps["time"];
+            }
+        }
     }
 }

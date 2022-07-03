@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.IO;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class PlayerManager : MonoBehaviour
 
     GameObject controller;
     int role;
+    int kills, deaths;
+    float holdTime;
 
     void Awake()
     {
@@ -56,5 +59,11 @@ public class PlayerManager : MonoBehaviour
 
         // respawn (remake controller)
         CreateController();
+
+        // track deaths
+        deaths++;
+        Hashtable hash = new Hashtable();
+        hash.Add("deaths", deaths);
+        PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
     }
 }
