@@ -16,6 +16,9 @@ public class BoomerangHitCheck : MonoBehaviour
         if (other != boomerang.thrower)
         {
             // Debug.Log("hit: " + other.gameObject.name);
+            other.gameObject.GetComponent<IDamageable>()?.TakeDamage(boomerang.damage * 0.5f);
+
+            // time to return to owner
             boomerang.SetFinishedTravelling(true);
         }
     }

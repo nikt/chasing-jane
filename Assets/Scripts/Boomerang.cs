@@ -9,9 +9,10 @@ public class Boomerang : MonoBehaviour
     [SerializeField] float maxDuration;
 
     [HideInInspector] public Collider thrower;
+    [HideInInspector] public float damage = 0f;
 
+    bool hasReturned = false;
     float duration = 0f;
-    // Vector3 origin;
     Vector3 direction;
 
     PhotonView PV;
@@ -21,10 +22,11 @@ public class Boomerang : MonoBehaviour
         PV = GetComponent<PhotonView>();
     }
 
-    public void Throw(Collider _thrower, Vector3 _direction)
+    public void Throw(Collider _thrower, Vector3 _direction, float _damage)
     {
         thrower = _thrower;
         direction = _direction;
+        damage = _damage;
         duration = 0f;
     }
 
@@ -32,7 +34,6 @@ public class Boomerang : MonoBehaviour
     {
         if (t)
         {
-            Debug.Log("done travlling");
             // done travelling, max out duration
             duration = maxDuration + 1f;
         }
@@ -63,11 +64,16 @@ public class Boomerang : MonoBehaviour
             float dist = Vector3.Distance(transform.position, thrower.transform.position);
             if (dist < 0.5f)
             {
-                Destroy(gameObject);
+                hasReturned = true;
             }
         }
 
         // rotate object
         transform.Rotate(Vector3.right * 360 * delta, Space.Self);
+    }
+
+    public bool HasReturned()
+    {
+        return hasReturned;
     }
 }

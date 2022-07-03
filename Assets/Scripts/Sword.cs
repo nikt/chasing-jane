@@ -6,15 +6,15 @@ using Photon.Pun;
 public class Sword : MeleeWeapon
 {
     [SerializeField] protected Camera cam;
-    [SerializeField] protected Collider selfCollider;
+    // [SerializeField] protected Collider selfCollider;
     [SerializeField] Transform weaponTransform;
     [SerializeField] Transform baseTransform;
     [SerializeField] Transform swingTransform;
 
-    PhotonView PV;
+    protected PhotonView PV;
 
     const float duration = 0.2f;
-    float currentDuration = -1f;
+    protected float currentDuration = -1f;
 
     void Awake()
     {

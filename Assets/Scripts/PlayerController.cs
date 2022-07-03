@@ -50,8 +50,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         {
             // destroy other cameras
             Destroy(GetComponentInChildren<Camera>().gameObject);
-            Destroy(rb);
             Destroy(ui);
+
+            // Destroy(rb);
+            rb.isKinematic = true;
         }
     }
 
@@ -150,7 +152,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
         // sync other players' guns
-        if (!PV.IsMine && targetPlayer == PV.Owner)
+        if (!PV.IsMine && targetPlayer == PV.Owner && changedProps.ContainsKey("itemIndex"))
         {
             EquipItem((int)changedProps["itemIndex"]);
         }

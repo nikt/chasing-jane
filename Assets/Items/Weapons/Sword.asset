@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Sword
   damage: 75
-  range: 1.5
+  range: 1.75

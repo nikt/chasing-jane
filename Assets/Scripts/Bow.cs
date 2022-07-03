@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using System.IO;
 
 public class Bow : RangedWeapon
 {
@@ -9,14 +10,38 @@ public class Bow : RangedWeapon
 
     PhotonView PV;
 
+    [SerializeField] string projectileName;
+    protected Projectile projectile;
+
+    const float duration = 1.5f;
+    protected float currentDuration = -1f;
+
     void Awake()
     {
         PV = GetComponent<PhotonView>();
     }
 
+    void Update()
+    {
+        if (!PV.IsMine) {
+            return;
+        }
+
+        if (currentDuration > 0f)
+        {
+            currentDuration -= Time.fixedDeltaTime;
+        }
+
+        // do something with projectiles?
+    }
+
     public override void Use()
     {
-        Shoot();
+        if (currentDuration <= 0f)
+        {
+            // only start shoot if not currently shooting
+            Shoot();
+        }
     }
 
     public override void AlternateUse()
@@ -26,35 +51,18 @@ public class Bow : RangedWeapon
 
     void Shoot()
     {
-        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f));
-        ray.origin = cam.transform.position;
+        currentDuration = duration;
 
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(((WeaponInfo)itemInfo).damage);
-            PV.RPC("RPC_Shoot", RpcTarget.All, hit.point, hit.normal);
-        }
+        // shoot projectile
+        projectile = PhotonNetwork.Instantiate(
+            Path.Combine("PhotonPrefabs", projectileName),
+            cam.transform.position + cam.transform.forward * 0.5f,
+            cam.transform.rotation,
+            0
+        ).GetComponent<Projectile>();
+
+        projectile.Shoot(selfCollider, cam.transform.forward, ((WeaponInfo)itemInfo).damage);
     }
 
-    [PunRPC]
-    void RPC_Shoot(Vector3 hitPosition, Vector3 hitNormal)
-    {
-        // move impacts with player
-        Collider[] colliders = Physics.OverlapSphere(hitPosition, 0.3f);
-        if (colliders.Length != 0)
-        {
-            GameObject impactObject = Instantiate(
-                impactPrefab,
-                hitPosition + hitNormal * 0.001f,   // small offset to avoid z-fighting
-                Quaternion.LookRotation(hitNormal, Vector3.up) * impactPrefab.transform.rotation
-            );
 
-            // decay after 10s
-            Destroy(impactObject, 10f);
-
-            // set collision as parent so impact will follow and clean up if parent is killed
-            impactObject.transform.SetParent(colliders[0].transform);
-        }
-
-    }
 }

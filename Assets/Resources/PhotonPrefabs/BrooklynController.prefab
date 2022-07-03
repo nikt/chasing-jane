@@ -1305,8 +1305,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemInfo: {fileID: 11400000, guid: e5f7c9c1f420f83458547d0084441efa, type: 2}
   itemGameObject: {fileID: 7889843904349200577}
+  selfCollider: {fileID: 0}
   impactPrefab: {fileID: 6359437984905352611, guid: 47ffde544b55c1345bab1ed8cf1fd743, type: 3}
   cam: {fileID: 4068507984986611730}
+  projectileName: 
 --- !u!114 &7756709544648292710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1569,9 +1571,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemInfo: {fileID: 11400000, guid: e1f7e41317979bc4bb8d12b2314f70a1, type: 2}
   itemGameObject: {fileID: 8375641862288615993}
+  selfCollider: {fileID: 4068507984082209931}
   swingEffect: {fileID: 719831395616823999}
   cam: {fileID: 4068507984986611730}
-  selfCollider: {fileID: 4068507984082209931}
   weaponTransform: {fileID: 1943234206721133805}
   baseTransform: {fileID: 8343857725163901725}
   swingTransform: {fileID: 8501598525665532186}
