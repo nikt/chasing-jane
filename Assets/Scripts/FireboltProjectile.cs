@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Firebolt : Projectile
+public class FireboltProjectile : Projectile
 {
     void FixedUpdate()
     {

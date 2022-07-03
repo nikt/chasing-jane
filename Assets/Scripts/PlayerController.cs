@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
     PhotonView PV;
 
-    const float maxHealth = 100f;
+    const float maxHealth = 150f;
     float currentHealth = maxHealth;
 
     PlayerManager playerManager;
