@@ -23,7 +23,7 @@ public class Sword : MeleeWeapon
 
     void FixedUpdate()
     {
-        if (!PV.IsMine) {
+        if (!PV.IsMine || !itemGameObject.activeSelf) {
             return;
         }
 
@@ -39,6 +39,14 @@ public class Sword : MeleeWeapon
 
         bool complete = (currentDuration <= 0f);
         swingEffect.SetActive(!complete);
+        // if (!complete) {
+        //     Debug.Log("show effect");
+        //     swingEffect.SetActive(true);
+
+        //     Debug.Log("swingEffect active: " + swingEffect.activeSelf);
+        // }else{
+        //     swingEffect.SetActive(false);
+        // }
 
         if (complete)
         {

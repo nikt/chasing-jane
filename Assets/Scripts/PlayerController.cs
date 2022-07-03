@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Rendering.PostProcessing;
 using Photon.Pun;
 using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
@@ -28,6 +29,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
     PhotonView PV;
 
+    Vignette vignette;
     const float maxHealth = 150f;
     float currentHealth = maxHealth;
 
@@ -38,6 +40,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         PV = GetComponent<PhotonView>();
 
         playerManager = PhotonView.Find((int)PV.InstantiationData[0]).GetComponent<PlayerManager>();
+
+        // find vignette in scene
+        PostProcessVolume volume = GameObject.Find("PostProcessing").GetComponent<PostProcessVolume>();
+        PostProcessProfile profile = volume.profile;
+        vignette = profile.GetSetting<Vignette>();
     }
 
     void Start()
@@ -68,26 +75,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         Look();
         Move();
         Jump();
-
-        for (int i = 0; i < items.Length; i++)
-        {
-            // check number keys to equip that item
-            if (Input.GetKeyDown((i + 1).ToString()))
-            {
-                EquipItem(i);
-                break;
-            }
-        }
-
-        float scroll = Input.GetAxisRaw("Mouse ScrollWheel");
-        if (scroll > 0f)
-        {
-            EquipItem(itemIndex + 1);
-        }
-        else if (scroll < 0f)
-        {
-            EquipItem(itemIndex - 1);
-        }
+        Equip();
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -129,6 +117,34 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         }
     }
 
+    void Equip()
+    {
+        for (int i = 0; i < items.Length - 1; i++)
+        {
+            // check number keys to equip that item
+            if (Input.GetKeyDown((i + 1).ToString()))
+            {
+                EquipItem(i);
+                break;
+            }
+        }
+
+        if (Input.GetKeyDown("p"))
+        {
+            EquipPatches();
+        }
+
+        float scroll = Input.GetAxisRaw("Mouse ScrollWheel");
+        if (scroll > 0f)
+        {
+            EquipItem(itemIndex + 1);
+        }
+        else if (scroll < 0f)
+        {
+            EquipItem(itemIndex - 1);
+        }
+    }
+
     bool IsSprinting()
     {
         return Input.GetKey(KeyCode.LeftShift);
@@ -158,10 +174,19 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         }
     }
 
-    void EquipItem(int i)
+    void EquipItem(int i, bool force = false)
     {
-        // make sure new index is in range
-        i = (i + items.Length) % items.Length;
+        if (!force)
+        {
+            // make sure new index is in range (range is all except last item - which is Patches)
+            int range = items.Length - 1;
+            i = (i + range) % range;
+        }
+        else
+        {
+            // still perform sanity check, but allow last item
+            i = (i + items.Length) % items.Length;
+        }
 
         if (i == previousItemIndex)
         {
@@ -189,6 +214,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         }
     }
 
+    void EquipPatches()
+    {
+        EquipItem(items.Length - 1, true);
+    }
+
     // IDamageable
 
     public void TakeDamage(float damage)
@@ -213,10 +243,26 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         {
             Die();
         }
+        else
+        {
+            StartCoroutine(NotifyDamage());
+        }
     }
 
     void Die()
     {
+        // reset vignette before dying
+        vignette.color.Override(new Color(0f, 0f, 0f, 1f));
         playerManager.Die();
+    }
+
+    // Coroutines
+
+    IEnumerator NotifyDamage()
+    {
+        // flash red vignette
+        vignette.color.Override(new Color(1f, 0f, 0f, 1f));
+        yield return new WaitForSeconds(.2f);
+        vignette.color.Override(new Color(0f, 0f, 0f, 1f));
     }
 }

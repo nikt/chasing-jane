@@ -23,7 +23,7 @@ public class Bow : RangedWeapon
 
     void Update()
     {
-        if (!PV.IsMine) {
+        if (!PV.IsMine || !itemGameObject.activeSelf) {
             return;
         }
 
