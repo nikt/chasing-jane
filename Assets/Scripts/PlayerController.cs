@@ -94,6 +94,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
             // die if you fall out of bounds
             Die(true);
         }
+
+        if (hasPatches)
+        {
+            // save time held
+            playerManager.AddTime(Time.deltaTime);
+        }
     }
 
     void Look()
@@ -131,11 +137,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
                 break;
             }
         }
-
-        // if (Input.GetKeyDown("p"))
-        // {
-        //     EquipPatches();
-        // }
 
         float scroll = Input.GetAxisRaw("Mouse ScrollWheel");
         if (scroll > 0f)

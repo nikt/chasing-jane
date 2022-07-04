@@ -12,7 +12,9 @@ public class PlayerManager : MonoBehaviour
     GameObject controller;
     int role;
     int kills, deaths;
-    float holdTime;
+
+    float timeHeld;
+    int timeRounded;
 
     void Awake()
     {
@@ -80,5 +82,20 @@ public class PlayerManager : MonoBehaviour
         Hashtable killsHash = new Hashtable();
         killsHash.Add("kills", kills);
         PhotonNetwork.LocalPlayer.SetCustomProperties(killsHash);
+    }
+
+    public void AddTime(float delta)
+    {
+        timeHeld += delta;
+        int round = (int)timeHeld;
+
+        // only report rounded numbers so we don't flood with requests
+        if (round > timeRounded) {
+            timeRounded = round;
+
+            Hashtable hash = new Hashtable();
+            hash.Add("timeHeld", timeRounded);
+            PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+        }
     }
 }

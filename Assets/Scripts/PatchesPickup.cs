@@ -32,7 +32,7 @@ public class PatchesPickup : MonoBehaviourPunCallbacks
 
     void FixedUpdate()
     {
-        if (!PV.IsMine || !pickupCheck.activeSelf)
+        if (!pickupCheck.activeSelf)
         {
             return;
         }
@@ -71,8 +71,8 @@ public class PatchesPickup : MonoBehaviourPunCallbacks
 
     public override void OnRoomPropertiesUpdate (Hashtable changedProps)
     {
-        Debug.Log("rooms props changed");
-        Debug.Log(changedProps);
+        // Debug.Log("rooms props changed");
+        // Debug.Log(changedProps);
         if (changedProps.ContainsKey("patchesActive"))
         {
             pickupCheck.gameObject.SetActive((bool)changedProps["patchesActive"]);
