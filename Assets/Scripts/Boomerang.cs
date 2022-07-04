@@ -28,6 +28,8 @@ public class Boomerang : MonoBehaviour
         direction = _direction;
         damage = _damage;
         duration = 0f;
+
+        Physics.IgnoreCollision(GetComponent<Collider>(), thrower);
     }
 
     public void SetFinishedTravelling(bool t)
@@ -75,5 +77,45 @@ public class Boomerang : MonoBehaviour
     public bool HasReturned()
     {
         return hasReturned;
+    }
+
+    // void OnCollisionEnter(Collision collision)
+    // {
+    //     Debug.Log("boomerang hit: " + collision.gameObject.name);
+    //     if (!PV.IsMine)
+    //     {
+    //         // not our projectile, don't bother
+    //         return;
+    //     }
+    //     Debug.Log("pv mine");
+
+    //     if (collision.gameObject != thrower.gameObject)
+    //     {
+    //         Debug.Log("boomerang hit: " + collision.gameObject.name);
+    //         collision.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage);
+
+    //         // time to return to thrower
+    //         SetFinishedTravelling(true);
+    //     }
+    // }
+
+    void OnTriggerEnter(Collider other)
+    {
+        // Debug.Log("boomerang trigger enter: " + other.gameObject.name);
+        if (!PV.IsMine)
+        {
+            // not our projectile, don't bother
+            return;
+        }
+        // Debug.Log("pv mine");
+
+        if (other.gameObject != thrower.gameObject)
+        {
+            // Debug.Log("boomerang hit: " + other.gameObject.name);
+            other.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage);
+
+            // time to return to thrower
+            SetFinishedTravelling(true);
+        }
     }
 }

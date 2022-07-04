@@ -79,7 +79,7 @@ public class Sword : MeleeWeapon
             Collider c = colliders[i];
             if (c != selfCollider)
             {
-                // Debug.Log("hit: " + c.gameObject.name);
+                Debug.Log("sword hit: " + c.gameObject.name);
                 c.gameObject.GetComponent<IDamageable>()?.TakeDamage(((WeaponInfo)itemInfo).damage);
             }
         }

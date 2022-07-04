@@ -71,12 +71,12 @@ public class Scoreboard : MonoBehaviourPunCallbacks
 
             if (changedProps.ContainsKey("kills"))
             {
-                item.deathsText.text = "" + (int)changedProps["kills"];
+                item.killsText.text = "" + (int)changedProps["kills"];
             }
 
             if (changedProps.ContainsKey("time"))
             {
-                item.deathsText.text = "" + (int)changedProps["time"];
+                item.timeText.text = "" + (int)changedProps["time"];
             }
         }
     }

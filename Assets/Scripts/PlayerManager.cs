@@ -32,7 +32,7 @@ public class PlayerManager : MonoBehaviour
     void CreateController()
     {
         string roleName = RoleManager.GetNameForRole((Role)role);
-        Debug.Log("creating controller for: " + roleName);
+        // Debug.Log("creating controller for: " + roleName);
 
         string controllerName = roleName + "Controller";
         if (roleName == "Observer")
@@ -60,10 +60,19 @@ public class PlayerManager : MonoBehaviour
         // respawn (remake controller)
         CreateController();
 
-        // track deaths
+        // track kills and deaths
         deaths++;
-        Hashtable hash = new Hashtable();
-        hash.Add("deaths", deaths);
-        PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+        Hashtable deathsHash = new Hashtable();
+        deathsHash.Add("deaths", deaths);
+        PhotonNetwork.LocalPlayer.SetCustomProperties(deathsHash);
+    }
+
+    public void ReportKill()
+    {
+        // track kills
+        kills++;
+        Hashtable killsHash = new Hashtable();
+        killsHash.Add("kills", kills);
+        PhotonNetwork.LocalPlayer.SetCustomProperties(killsHash);
     }
 }

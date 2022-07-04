@@ -107,7 +107,7 @@ public class Projectile : MonoBehaviour
 
         if (collision.gameObject != shooter.gameObject)
         {
-            // Debug.Log("inner hit: " + collision.gameObject.name);
+            Debug.Log("projectile hit: " + collision.gameObject.name);
             collision.gameObject.GetComponent<IDamageable>()?.TakeDamage(GetDamage());
 
             // time to clean up

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8742176322024309530}
   - component: {fileID: 7807705710925053459}
   - component: {fileID: 79087822303029858}
+  - component: {fileID: 4702808240781838256}
   m_Layer: 0
   m_Name: Boomerang
   m_TagString: Untagged
@@ -90,6 +91,19 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!65 &4702808240781838256
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5578995924384440410}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 1.5, z: 0.5}
+  m_Center: {x: 0, y: 0.3, z: 0}
 --- !u!1001 &5578995924850059969
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -159,36 +173,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5ee613d2bc15114baf66cb27fb00c69, type: 3}
---- !u!1 &4732714682539251600 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f5ee613d2bc15114baf66cb27fb00c69, type: 3}
-  m_PrefabInstance: {fileID: 5578995924850059969}
-  m_PrefabAsset: {fileID: 0}
---- !u!65 &5578995924850059970
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4732714682539251600}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.008711985, y: 0.0013548548, z: 0.01151456}
-  m_Center: {x: -0.00012671901, y: 8.731149e-11, z: 0.0041155163}
---- !u!114 &5578995924850059973
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4732714682539251600}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d68ae837ff385f14ab4a8f1ba0a285e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &5397047663700430122 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f5ee613d2bc15114baf66cb27fb00c69, type: 3}

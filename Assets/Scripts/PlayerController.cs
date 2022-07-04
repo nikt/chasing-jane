@@ -223,11 +223,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
     public void TakeDamage(float damage)
     {
-        PV.RPC("RPC_TakeDamage", RpcTarget.All, damage);
+        Debug.Log("TakeDamage: " + damage);
+        PV.RPC("RPC_TakeDamage", RpcTarget.All, damage, PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
     [PunRPC]
-    void RPC_TakeDamage(float damage)
+    void RPC_TakeDamage(float damage, int actorNumber)
     {
         if (!PV.IsMine)
         {
@@ -241,10 +242,15 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
         if (currentHealth <= 0)
         {
+            // report kill back to last player to hit
+            PV.RPC("RPC_ReportKill", RpcTarget.All, actorNumber);
             Die();
         }
         else
         {
+            Debug.Log("took damage???");
+            Debug.Log(damage);
+            Debug.Log("actor: " + actorNumber);
             StartCoroutine(NotifyDamage());
         }
     }
@@ -254,6 +260,21 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         // reset vignette before dying
         vignette.color.Override(new Color(0f, 0f, 0f, 1f));
         playerManager.Die();
+    }
+
+    [PunRPC]
+    void RPC_ReportKill(int actorNumber)
+    {
+        if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
+        {
+            ReportKill();
+        }
+
+    }
+
+    void ReportKill()
+    {
+        playerManager.ReportKill();
     }
 
     // Coroutines
