@@ -20,6 +20,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     int itemIndex;
     int previousItemIndex = -1;
 
+    // Patches
+    bool hasPatches = false;
+
     float verticalLookRotation;
     bool grounded;
     Vector3 smoothMoveVelocity;
@@ -89,7 +92,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         if (transform.position.y < -10f)
         {
             // die if you fall out of bounds
-            Die();
+            Die(true);
         }
     }
 
@@ -129,10 +132,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
             }
         }
 
-        if (Input.GetKeyDown("p"))
-        {
-            EquipPatches();
-        }
+        // if (Input.GetKeyDown("p"))
+        // {
+        //     EquipPatches();
+        // }
 
         float scroll = Input.GetAxisRaw("Mouse ScrollWheel");
         if (scroll > 0f)
@@ -170,12 +173,18 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         // sync other players' guns
         if (!PV.IsMine && targetPlayer == PV.Owner && changedProps.ContainsKey("itemIndex"))
         {
-            EquipItem((int)changedProps["itemIndex"]);
+            EquipItem((int)changedProps["itemIndex"], true);
         }
     }
 
     void EquipItem(int i, bool force = false)
     {
+        if (hasPatches)
+        {
+            // can't do anything while holding patches
+            return;
+        }
+
         if (!force)
         {
             // make sure new index is in range (range is all except last item - which is Patches)
@@ -214,16 +223,16 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         }
     }
 
-    void EquipPatches()
+    public void EquipPatches()
     {
         EquipItem(items.Length - 1, true);
+        hasPatches = true;
     }
 
     // IDamageable
 
     public void TakeDamage(float damage)
     {
-        Debug.Log("TakeDamage: " + damage);
         PV.RPC("RPC_TakeDamage", RpcTarget.All, damage, PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
@@ -248,15 +257,31 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         }
         else
         {
-            Debug.Log("took damage???");
-            Debug.Log(damage);
-            Debug.Log("actor: " + actorNumber);
             StartCoroutine(NotifyDamage());
         }
     }
 
-    void Die()
+    void Die(bool voided = false)
     {
+        // drop patches
+        hasPatches = false;
+        PatchesPickup.Instance.gameObject.SetActive(true);
+
+        Vector3 patchesSpawn = new Vector3(
+            transform.position.x,
+            transform.position.y,
+            transform.position.z
+        );
+
+        if (voided)
+        {
+            // fell off the map, spawn patches on a spawn point instead
+            Transform spawn = SpawnManager.Instance.GetSpawnPoint();
+            patchesSpawn.Set(spawn.position.x, spawn.position.y, spawn.position.z);
+        }
+
+        PatchesPickup.Instance.Drop(patchesSpawn.x, patchesSpawn.y, patchesSpawn.z);
+
         // reset vignette before dying
         vignette.color.Override(new Color(0f, 0f, 0f, 1f));
         playerManager.Die();

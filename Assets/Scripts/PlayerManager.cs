@@ -26,6 +26,12 @@ public class PlayerManager : MonoBehaviour
         if (PV.IsMine)  // owned by local player
         {
             CreateController();
+
+            // Jane starts holding patches
+            if (role == (int)Role.Jane)
+            {
+                controller.GetComponent<PlayerController>()?.EquipPatches();
+            }
         }
     }
 
