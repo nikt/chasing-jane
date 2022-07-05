@@ -124,9 +124,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
             items[itemIndex].AlternateUse();
         }
 
-        if (transform.position.y < -10f)
+        if (transform.position.y < -10f || Input.GetKeyDown("k"))
         {
-            // die if you fall out of bounds
+            // die if you fall out of bounds (or need to unstuck yourself)
             Die(true);
         }
 
