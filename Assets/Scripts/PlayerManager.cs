@@ -10,7 +10,7 @@ public class PlayerManager : MonoBehaviour
     PhotonView PV;
 
     GameObject controller;
-    int role;
+    Role role;
     int kills, deaths;
 
     float timeHeld;
@@ -23,32 +23,37 @@ public class PlayerManager : MonoBehaviour
 
     public void SetRole(int r)
     {
-        role = r;
+        role = (Role)r;
 
         if (PV.IsMine)  // owned by local player
         {
-            CreateController();
+            CreateController(true);
 
             // Jane starts holding patches
-            if (role == (int)Role.Jane)
+            if (role == Role.Jane)
             {
                 controller.GetComponent<PlayerController>()?.EquipPatches();
             }
         }
     }
 
-    void CreateController()
+    void CreateController(bool first = false)
     {
-        string roleName = RoleManager.GetNameForRole((Role)role);
-        // Debug.Log("creating controller for: " + roleName);
-
+        Transform spawn = SpawnManager.Instance.GetSpawnPoint(role, first);
+        string roleName = RoleManager.GetNameForRole(role);
         string controllerName = roleName + "Controller";
-        if (roleName == "Observer")
+
+        Debug.Log("creating controller: " + controllerName);
+
+        if (role == Role.Observer)
         {
-            controllerName = "PlayerController";
+            // special case for observer: now network instantiation needed
+            GameObject prefab = Resources.Load<GameObject>(Path.Combine("PhotonPrefabs", controllerName)) as GameObject;
+            Debug.Log(prefab);
+            controller = (GameObject)Instantiate(prefab, spawn.position, spawn.rotation);
+            return;
         }
 
-        Transform spawn = SpawnManager.Instance.GetSpawnPoint();
         // Instantiate our player controller
         controller = PhotonNetwork.Instantiate(
             Path.Combine("PhotonPrefabs", controllerName),
@@ -59,6 +64,13 @@ public class PlayerManager : MonoBehaviour
                 PV.ViewID
             }
         );
+        
+        // set role
+        PlayerController pc = controller.GetComponent<PlayerController>();
+        if (pc != null)
+        {
+            pc.role = role;
+        }
     }
 
     public void Die()

@@ -16,8 +16,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
     [SerializeField] float mouseSensitivity, sprintSpeed, walkSpeed, jumpForce, smoothTime;
 
-    [SerializeField] Item[] items;
+    public Role role;
 
+    [SerializeField] Item[] items;
     int itemIndex;
     int previousItemIndex = -1;
 
@@ -38,6 +39,28 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     float currentHealth = maxHealth;
 
     PlayerManager playerManager;
+
+    public bool focusOnEnable = true; // whether or not to focus and lock cursor immediately on enable
+    static bool Focused {
+		get => Cursor.lockState == CursorLockMode.Locked;
+		set {
+			Cursor.lockState = value ? CursorLockMode.Locked : CursorLockMode.None;
+			Cursor.visible = value == false;
+		}
+	}
+
+	public override void OnEnable() {
+        base.OnEnable();
+		if (focusOnEnable)
+        {
+            Focused = true;
+        }
+	}
+
+	public override void OnDisable() {
+        base.OnDisable();
+        Focused = false;
+    }
 
     void Awake() {
         rb = GetComponent<Rigidbody>();
@@ -73,6 +96,17 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         if (!PV.IsMine)
         {
             // only control ourselves
+            return;
+        }
+
+        if (!Focused)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Focused = true;
+            }
+
+            // unfocused, stop reading input
             return;
         }
 
@@ -283,7 +317,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         if (voided)
         {
             // fell off the map, spawn patches on a spawn point instead
-            Transform spawn = SpawnManager.Instance.GetSpawnPoint();
+            Transform spawn = SpawnManager.Instance.GetSpawnPoint(Role.Observer);
             patchesSpawn.Set(spawn.position.x, spawn.position.y, spawn.position.z);
         }
 

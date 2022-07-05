@@ -482,9 +482,11 @@ MonoBehaviour:
   walkSpeed: 4
   jumpForce: 250
   smoothTime: 0.15
+  role: 0
   items:
   - {fileID: 6009255093704162436}
   - {fileID: 4238990005142275093}
+  focusOnEnable: 1
 --- !u!54 &6630607061659189204
 Rigidbody:
   m_ObjectHideFlags: 0
