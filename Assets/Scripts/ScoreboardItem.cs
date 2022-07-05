@@ -11,6 +11,7 @@ public class ScoreboardItem : MonoBehaviour
     public TMP_Text killsText;
     public TMP_Text deathsText;
     public TMP_Text timeText;
+    public GameObject winnerImage;
 
     public Player player;
 

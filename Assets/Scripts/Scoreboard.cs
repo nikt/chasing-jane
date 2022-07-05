@@ -103,17 +103,40 @@ public class Scoreboard : MonoBehaviourPunCallbacks
         // Check for a winner
         if (changedProps.ContainsKey(RoomProperties.WINNING_ACTOR))
         {
-            Debug.Log("WINNER! actor: " + (int)changedProps[RoomProperties.WINNING_ACTOR]);
-            // quitButton.SetActive(true);
+            int winningActor = (int)changedProps[RoomProperties.WINNING_ACTOR];
+            Debug.Log("WINNER! actor: " + winningActor);
+
             finished = true;
-            winner = (PhotonNetwork.LocalPlayer.ActorNumber == (int)changedProps[RoomProperties.WINNING_ACTOR]);
+            winner = (PhotonNetwork.LocalPlayer.ActorNumber == winningActor);
+
+            // find winner item
+            foreach (Player player in scoreboardItems.Keys)
+            {
+                if (player.ActorNumber == winningActor)
+                {
+                    scoreboardItems[player].winnerImage.SetActive(true);
+                    break;
+                }
+            }
         }
     }
 
     public void LeaveRoom()
     {
-        Debug.Log("Leaving room...");
+        StartCoroutine(DisconnectAndLoad());
+    }
+
+    IEnumerator DisconnectAndLoad()
+    {
+        // leave and wait for full disconnect
         PhotonNetwork.LeaveRoom();
+        while (PhotonNetwork.InRoom)
+        {
+            yield return null;
+        }
+
+        // clean up RoomManager before hitting main menu (so there's no duplicate error)
+        Destroy(RoomManager.Instance.gameObject);
 
         // go back to main menu
         SceneManager.LoadScene("Intro");

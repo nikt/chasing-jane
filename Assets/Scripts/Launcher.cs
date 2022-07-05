@@ -28,7 +28,9 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        PhotonNetwork.ConnectUsingSettings();
+        if (!PhotonNetwork.IsConnected) {
+            PhotonNetwork.ConnectUsingSettings();
+        }
     }
 
     public override void OnConnectedToMaster()
@@ -139,7 +141,6 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public void QuitGame()
     {
-        Debug.Log("quit game");
         Application.Quit();
     }
 }
