@@ -15,6 +15,7 @@ public class PlayerManager : MonoBehaviour
 
     float timeHeld;
     int timeRounded;
+    bool finished = false;
 
     void Awake()
     {
@@ -98,6 +99,12 @@ public class PlayerManager : MonoBehaviour
 
     public void AddTime(float delta)
     {
+        if (finished)
+        {
+            // game is already over, no need to continue
+            return;
+        }
+
         timeHeld += delta;
         int round = (int)timeHeld;
 
@@ -108,6 +115,15 @@ public class PlayerManager : MonoBehaviour
             Hashtable hash = new Hashtable();
             hash.Add("timeHeld", timeRounded);
             PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+        }
+
+        if (timeRounded >= RoomProperties.WINNING_TIME)
+        {
+            finished = true;
+
+            Hashtable hash = new Hashtable();
+            hash.Add(RoomProperties.WINNING_ACTOR, PhotonNetwork.LocalPlayer.ActorNumber);
+            PhotonNetwork.CurrentRoom.SetCustomProperties(hash);
         }
     }
 }

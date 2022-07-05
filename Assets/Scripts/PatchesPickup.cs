@@ -53,7 +53,7 @@ public class PatchesPickup : MonoBehaviourPunCallbacks
 
         // disable for everyone
         Hashtable hash = new Hashtable();
-        hash.Add("patchesActive", false);
+        hash.Add(RoomProperties.PATCHES_ACTIVE, false);
         PhotonNetwork.CurrentRoom.SetCustomProperties(hash);
     }
 
@@ -64,8 +64,8 @@ public class PatchesPickup : MonoBehaviourPunCallbacks
 
         // move for everyone
         Hashtable hash = new Hashtable();
-        hash.Add("patchesPosition", target);
-        hash.Add("patchesActive", true);
+        hash.Add(RoomProperties.PATCHES_POSITION, target);
+        hash.Add(RoomProperties.PATCHES_ACTIVE, true);
         PhotonNetwork.CurrentRoom.SetCustomProperties(hash);
     }
 
@@ -73,14 +73,14 @@ public class PatchesPickup : MonoBehaviourPunCallbacks
     {
         // Debug.Log("rooms props changed");
         // Debug.Log(changedProps);
-        if (changedProps.ContainsKey("patchesActive"))
+        if (changedProps.ContainsKey(RoomProperties.PATCHES_ACTIVE))
         {
-            pickupCheck.gameObject.SetActive((bool)changedProps["patchesActive"]);
+            pickupCheck.gameObject.SetActive((bool)changedProps[RoomProperties.PATCHES_ACTIVE]);
         }
 
-        if (changedProps.ContainsKey("patchesPosition"))
+        if (changedProps.ContainsKey(RoomProperties.PATCHES_POSITION))
         {
-            pickupCheck.transform.position = (Vector3)changedProps["patchesPosition"];
+            pickupCheck.transform.position = (Vector3)changedProps[RoomProperties.PATCHES_POSITION];
         }
     }
 }

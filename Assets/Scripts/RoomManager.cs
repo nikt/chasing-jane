@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 using System.IO;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class RoomManager : MonoBehaviourPunCallbacks
 {
@@ -43,6 +44,18 @@ public class RoomManager : MonoBehaviourPunCallbacks
                 int role = PlayerPrefs.GetInt("role");
                 managerObject.GetComponent<PlayerManager>()?.SetRole(role);
             }
+        }
+    }
+
+    public override void OnRoomPropertiesUpdate (Hashtable changedProps)
+    {
+        // Debug.Log("rooms props changed");
+        // Debug.Log(changedProps);
+
+        // Check for a winner
+        if (changedProps.ContainsKey(RoomProperties.WINNING_ACTOR))
+        {
+            // Debug.Log("WINNER! actor: " + (int)changedProps[RoomProperties.WINNING_ACTOR]);
         }
     }
 }

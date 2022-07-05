@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Photon.Realtime;
 using Photon.Pun;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
@@ -9,6 +10,9 @@ public class Scoreboard : MonoBehaviourPunCallbacks
 {
     [SerializeField] Transform container;
     [SerializeField] GameObject scoreboardItemPrefab;
+    [SerializeField] GameObject quitButton;
+    bool finished = false;
+    bool winner = false;
 
     Dictionary<Player, ScoreboardItem> scoreboardItems = new Dictionary<Player, ScoreboardItem>();
 
@@ -18,6 +22,9 @@ public class Scoreboard : MonoBehaviourPunCallbacks
         {
             AddScoreboardItem(player);
         }
+
+        // disable quit button by default
+        quitButton.SetActive(false);
     }
 
     void Update()
@@ -29,6 +36,13 @@ public class Scoreboard : MonoBehaviourPunCallbacks
         else
         {
             container.gameObject.SetActive(false);
+        }
+
+        if (finished)
+        {
+            // game over, always show score and quit
+            container.gameObject.SetActive(true);
+            quitButton.SetActive(true);
         }
     }
 
@@ -79,5 +93,29 @@ public class Scoreboard : MonoBehaviourPunCallbacks
                 item.timeText.text = "" + (int)changedProps["timeHeld"];
             }
         }
+    }
+
+    public override void OnRoomPropertiesUpdate (Hashtable changedProps)
+    {
+        // Debug.Log("rooms props changed");
+        // Debug.Log(changedProps);
+
+        // Check for a winner
+        if (changedProps.ContainsKey(RoomProperties.WINNING_ACTOR))
+        {
+            Debug.Log("WINNER! actor: " + (int)changedProps[RoomProperties.WINNING_ACTOR]);
+            // quitButton.SetActive(true);
+            finished = true;
+            winner = (PhotonNetwork.LocalPlayer.ActorNumber == (int)changedProps[RoomProperties.WINNING_ACTOR]);
+        }
+    }
+
+    public void LeaveRoom()
+    {
+        Debug.Log("Leaving room...");
+        PhotonNetwork.LeaveRoom();
+
+        // go back to main menu
+        SceneManager.LoadScene("Intro");
     }
 }

@@ -38,6 +38,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     const float maxHealth = 150f;
     float currentHealth = maxHealth;
 
+    // game state
+    bool finished;
+
     PlayerManager playerManager;
 
     public bool focusOnEnable = true; // whether or not to focus and lock cursor immediately on enable
@@ -96,6 +99,13 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         if (!PV.IsMine)
         {
             // only control ourselves
+            return;
+        }
+
+        if (finished)
+        {
+            // stop controlling player, free cursor
+            Focused = false;
             return;
         }
 
@@ -200,13 +210,23 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     }
 
     void FixedUpdate() {
-        if (!PV.IsMine)
+        if (!PV.IsMine || finished)
         {
             // only control ourselves
             return;
         }
 
         rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
+    }
+
+    public override void OnRoomPropertiesUpdate (Hashtable changedProps)
+    {
+        // Check for a winner
+        if (PV.IsMine && changedProps.ContainsKey(RoomProperties.WINNING_ACTOR))
+        {
+            ui.SetActive(false);
+            finished = true;
+        }
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)

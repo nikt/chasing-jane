@@ -136,4 +136,10 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.LoadLevel("City"); // scene index in build settings
     }
+
+    public void QuitGame()
+    {
+        Debug.Log("quit game");
+        Application.Quit();
+    }
 }

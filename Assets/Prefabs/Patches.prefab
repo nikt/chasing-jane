@@ -166,6 +166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemInfo: {fileID: 11400000, guid: f47435497757b5a48bf42c2f60da637b, type: 2}
   itemGameObject: {fileID: 6701133318290368597}
+  equipped: 0
   selfCollider: {fileID: 0}
   swingEffect: {fileID: 0}
   cam: {fileID: 0}
@@ -246,22 +247,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c2ecf935412b80c48a85ab3cc5648919, type: 3}
   m_PrefabInstance: {fileID: 6610302524077817247}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7310381953424008706
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6304453226180346062}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
 --- !u!114 &1967717758720756441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -285,6 +270,22 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &7310381953424008706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6304453226180346062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!4 &6644562493135641204 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c2ecf935412b80c48a85ab3cc5648919, type: 3}
