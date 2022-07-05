@@ -10,6 +10,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 {
     [SerializeField] Image healthbarImage;
+    [SerializeField] Transform needleTransform;
     [SerializeField] GameObject ui;
     [SerializeField] GameObject cameraHolder;
 
@@ -110,12 +111,17 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90f, 90f);
 
         cameraHolder.transform.localEulerAngles = Vector3.left * verticalLookRotation;
+
+        // Quaternion needleRotation = Quaternion.identity;
+        // needleRotation.eulerAngles = new Vector3(0, 0, );
+        needleTransform.transform.localEulerAngles = new Vector3(0, 0, transform.eulerAngles.y);
     }
 
     void Move()
     {
+        float multiplier = hasPatches ? 0.85f : 1.0f;
         Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-        moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (IsSprinting() ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
+        moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * multiplier * (IsSprinting() ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
     }
 
     void Jump()
