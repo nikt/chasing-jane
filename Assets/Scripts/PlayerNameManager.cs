@@ -6,8 +6,16 @@ using TMPro;
 
 public class PlayerNameManager : MonoBehaviour
 {
+    public static PlayerNameManager Instance;
+
     [SerializeField] TMP_InputField usernameInput;
     [SerializeField] TMP_Dropdown roleInput;
+    Role role;
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -30,5 +38,12 @@ public class PlayerNameManager : MonoBehaviour
     {
         PhotonNetwork.NickName = roleInput.captionText.text;
         PlayerPrefs.SetInt("role", roleInput.value);
+
+        role = (Role) roleInput.value;
+    }
+
+    public Role GetRole()
+    {
+        return role;
     }
 }

@@ -22,9 +22,9 @@ public class PlayerManager : MonoBehaviour
         PV = GetComponent<PhotonView>();
     }
 
-    public void SetRole(int r)
+    public void SetRole(Role r)
     {
-        role = (Role)r;
+        role = r;
 
         if (PV.IsMine)  // owned by local player
         {

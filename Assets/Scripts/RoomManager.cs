@@ -39,11 +39,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
             GameObject managerObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity);
 
             // load proper character
-            if (PlayerPrefs.HasKey("role"))
-            {
-                int role = PlayerPrefs.GetInt("role");
-                managerObject.GetComponent<PlayerManager>()?.SetRole(role);
-            }
+            managerObject.GetComponent<PlayerManager>()?.SetRole(PlayerNameManager.Instance.GetRole());
         }
     }
 
