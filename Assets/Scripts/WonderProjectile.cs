@@ -6,9 +6,8 @@ public class WonderProjectile : FireboltProjectile
 {
     protected override float GetDamage()
     {
-        // random damage, bias towards less
+        // random damage, bias towards less (but still a small chance to insta-kill)
         float r = Random.value;
-        Debug.Log("damage: " + (base.GetDamage() * r * r));
         return base.GetDamage() * r * r;
     }
 }

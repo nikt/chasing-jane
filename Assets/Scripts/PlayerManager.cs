@@ -44,13 +44,10 @@ public class PlayerManager : MonoBehaviour
         string roleName = RoleManager.GetNameForRole(role);
         string controllerName = roleName + "Controller";
 
-        Debug.Log("creating controller: " + controllerName);
-
         if (role == Role.Observer)
         {
             // special case for observer: now network instantiation needed
             GameObject prefab = Resources.Load<GameObject>(Path.Combine("PhotonPrefabs", controllerName)) as GameObject;
-            Debug.Log(prefab);
             controller = (GameObject)Instantiate(prefab, spawn.position, spawn.rotation);
             return;
         }

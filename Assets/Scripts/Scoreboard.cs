@@ -97,14 +97,11 @@ public class Scoreboard : MonoBehaviourPunCallbacks
 
     public override void OnRoomPropertiesUpdate (Hashtable changedProps)
     {
-        // Debug.Log("rooms props changed");
-        // Debug.Log(changedProps);
-
         // Check for a winner
         if (changedProps.ContainsKey(RoomProperties.WINNING_ACTOR))
         {
             int winningActor = (int)changedProps[RoomProperties.WINNING_ACTOR];
-            Debug.Log("WINNER! actor: " + winningActor);
+            // Debug.Log("WINNER! actor: " + winningActor);
 
             finished = true;
             winner = (PhotonNetwork.LocalPlayer.ActorNumber == winningActor);

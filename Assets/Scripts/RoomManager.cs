@@ -45,8 +45,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     public override void OnRoomPropertiesUpdate (Hashtable changedProps)
     {
-        // Debug.Log("rooms props changed");
-        // Debug.Log(changedProps);
+        // NOTE: not doing anything for now?
 
         // Check for a winner
         if (changedProps.ContainsKey(RoomProperties.WINNING_ACTOR))

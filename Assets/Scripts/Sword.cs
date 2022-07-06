@@ -38,15 +38,9 @@ public class Sword : MeleeWeapon
         }
 
         bool complete = (currentDuration <= 0f);
-        swingEffect.SetActive(!complete);
-        // if (!complete) {
-        //     Debug.Log("show effect");
-        //     swingEffect.SetActive(true);
 
-        //     Debug.Log("swingEffect active: " + swingEffect.activeSelf);
-        // }else{
-        //     swingEffect.SetActive(false);
-        // }
+        // show/hide swing effect
+        swingEffect.SetActive(!complete);
 
         if (complete)
         {

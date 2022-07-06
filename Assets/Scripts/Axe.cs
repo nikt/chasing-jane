@@ -18,7 +18,6 @@ public class Axe : Sword
 
         if (projectile && projectile.HasReturned())
         {
-            // Debug.Log("axe returned");
             PhotonNetwork.Destroy(projectile.gameObject);
             projectile = null;
 
