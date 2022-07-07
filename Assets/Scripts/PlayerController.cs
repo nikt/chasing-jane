@@ -324,24 +324,27 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
     void Die(bool voided = false)
     {
-        // drop patches
-        hasPatches = false;
-        PatchesPickup.Instance.gameObject.SetActive(true);
-
-        Vector3 patchesSpawn = new Vector3(
-            transform.position.x,
-            transform.position.y,
-            transform.position.z
-        );
-
-        if (voided)
+        if (hasPatches)
         {
-            // fell off the map, spawn patches on a spawn point instead
-            Transform spawn = SpawnManager.Instance.GetSpawnPoint(Role.Observer);
-            patchesSpawn.Set(spawn.position.x, spawn.position.y, spawn.position.z);
-        }
+            // drop patches
+            hasPatches = false;
+            PatchesPickup.Instance.gameObject.SetActive(true);
 
-        PatchesPickup.Instance.Drop(patchesSpawn.x, patchesSpawn.y, patchesSpawn.z);
+            Vector3 patchesSpawn = new Vector3(
+                transform.position.x,
+                transform.position.y,
+                transform.position.z
+            );
+
+            if (voided)
+            {
+                // fell off the map, spawn patches on a spawn point instead
+                Transform spawn = SpawnManager.Instance.GetSpawnPoint(Role.Observer);
+                patchesSpawn.Set(spawn.position.x, spawn.position.y, spawn.position.z);
+            }
+
+            PatchesPickup.Instance.Drop(patchesSpawn.x, patchesSpawn.y, patchesSpawn.z);
+        }
 
         // reset vignette before dying
         vignette.color.Override(new Color(0f, 0f, 0f, 1f));
