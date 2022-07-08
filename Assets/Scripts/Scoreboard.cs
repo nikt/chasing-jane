@@ -11,6 +11,7 @@ public class Scoreboard : MonoBehaviourPunCallbacks
     [SerializeField] Transform container;
     [SerializeField] GameObject scoreboardItemPrefab;
     [SerializeField] GameObject quitButton;
+    [SerializeField] CanvasGroup canvasGroup;
     bool finished = false;
     bool winner = false;
 
@@ -29,20 +30,23 @@ public class Scoreboard : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.Tab))
-        {
-            container.gameObject.SetActive(true);
-        }
-        else
-        {
-            container.gameObject.SetActive(false);
-        }
-
         if (finished)
         {
             // game over, always show score and quit
-            container.gameObject.SetActive(true);
+            canvasGroup.alpha = 1;
             quitButton.SetActive(true);
+
+            // don't look for user input after game is over
+            return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            canvasGroup.alpha = 1;
+        }
+        else if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            canvasGroup.alpha = 0;
         }
     }
 
@@ -69,30 +73,6 @@ public class Scoreboard : MonoBehaviourPunCallbacks
     {
         Destroy(scoreboardItems[player].gameObject);
         scoreboardItems.Remove(player);
-    }
-
-    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
-    {
-        // sync player stats
-        if (scoreboardItems.ContainsKey(targetPlayer))
-        {
-            ScoreboardItem item = scoreboardItems[targetPlayer];
-
-            if (changedProps.ContainsKey("deaths"))
-            {
-                item.deathsText.text = "" + (int)changedProps["deaths"];
-            }
-
-            if (changedProps.ContainsKey("kills"))
-            {
-                item.killsText.text = "" + (int)changedProps["kills"];
-            }
-
-            if (changedProps.ContainsKey("timeHeld"))
-            {
-                item.timeText.text = "" + (int)changedProps["timeHeld"];
-            }
-        }
     }
 
     public override void OnRoomPropertiesUpdate (Hashtable changedProps)

@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 using System.IO;
+using System.Linq;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class PlayerManager : MonoBehaviour
@@ -81,17 +83,8 @@ public class PlayerManager : MonoBehaviour
         // track kills and deaths
         deaths++;
         Hashtable deathsHash = new Hashtable();
-        deathsHash.Add("deaths", deaths);
+        deathsHash.Add(PlayerProperties.DEATHS, deaths);
         PhotonNetwork.LocalPlayer.SetCustomProperties(deathsHash);
-    }
-
-    public void ReportKill()
-    {
-        // track kills
-        kills++;
-        Hashtable killsHash = new Hashtable();
-        killsHash.Add("kills", kills);
-        PhotonNetwork.LocalPlayer.SetCustomProperties(killsHash);
     }
 
     public void AddTime(float delta)
@@ -106,11 +99,12 @@ public class PlayerManager : MonoBehaviour
         int round = (int)timeHeld;
 
         // only report rounded numbers so we don't flood with requests
-        if (round > timeRounded) {
+        if (round > timeRounded)
+        {
             timeRounded = round;
 
             Hashtable hash = new Hashtable();
-            hash.Add("timeHeld", timeRounded);
+            hash.Add(PlayerProperties.TIME_HELD, timeRounded);
             PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
         }
 
@@ -122,5 +116,26 @@ public class PlayerManager : MonoBehaviour
             hash.Add(RoomProperties.WINNING_ACTOR, PhotonNetwork.LocalPlayer.ActorNumber);
             PhotonNetwork.CurrentRoom.SetCustomProperties(hash);
         }
+    }
+
+    public void GetKill()
+    {
+        PV.RPC(nameof(RPC_GetKill), PV.Owner);
+    }
+
+    [PunRPC]
+    void RPC_GetKill()
+    {
+        // track kills
+        kills++;
+        Hashtable killsHash = new Hashtable();
+        killsHash.Add(PlayerProperties.KILLS, kills);
+        PhotonNetwork.LocalPlayer.SetCustomProperties(killsHash);
+    }
+
+    public static PlayerManager Find(Player player)
+    {
+        // pretty slow/inefficient
+        return FindObjectsOfType<PlayerManager>().SingleOrDefault(x => x.PV.Owner == player);
     }
 }

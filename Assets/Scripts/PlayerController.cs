@@ -232,9 +232,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
         // sync other players' guns
-        if (!PV.IsMine && targetPlayer == PV.Owner && changedProps.ContainsKey("itemIndex"))
+        if (!PV.IsMine && targetPlayer == PV.Owner && changedProps.ContainsKey(PlayerProperties.ITEM_INDEX))
         {
-            EquipItem((int)changedProps["itemIndex"], true);
+            EquipItem((int)changedProps[PlayerProperties.ITEM_INDEX], true);
         }
     }
 
@@ -279,7 +279,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         if (PV.IsMine)
         {
             Hashtable hash = new Hashtable();
-            hash.Add("itemIndex", itemIndex);
+            hash.Add(PlayerProperties.TIME_HELD, itemIndex);
             PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
         }
     }
@@ -294,18 +294,13 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
     public void TakeDamage(float damage)
     {
-        PV.RPC("RPC_TakeDamage", RpcTarget.All, damage, PhotonNetwork.LocalPlayer.ActorNumber);
+        // only send to the owner of this player controller
+        PV.RPC(nameof(RPC_TakeDamage), PV.Owner, damage);
     }
 
     [PunRPC]
-    void RPC_TakeDamage(float damage, int actorNumber)
+    void RPC_TakeDamage(float damage, PhotonMessageInfo info)
     {
-        if (!PV.IsMine)
-        {
-            // ignore everyone who isn't the victim
-            return;
-        }
-
         currentHealth -= damage;
 
         healthbarImage.fillAmount = currentHealth / maxHealth;
@@ -313,7 +308,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         if (currentHealth <= 0)
         {
             // report kill back to last player to hit
-            PV.RPC("RPC_ReportKill", RpcTarget.All, actorNumber);
+            PlayerManager.Find(info.Sender).GetKill();
             Die();
         }
         else
@@ -349,21 +344,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         // reset vignette before dying
         vignette.color.Override(new Color(0f, 0f, 0f, 1f));
         playerManager.Die();
-    }
-
-    [PunRPC]
-    void RPC_ReportKill(int actorNumber)
-    {
-        if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
-        {
-            ReportKill();
-        }
-
-    }
-
-    void ReportKill()
-    {
-        playerManager.ReportKill();
     }
 
     // Coroutines
