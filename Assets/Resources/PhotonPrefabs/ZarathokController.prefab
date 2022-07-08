@@ -565,6 +565,7 @@ MonoBehaviour:
   walkSpeed: 4
   jumpForce: 250
   smoothTime: 0.15
+  damageMaterial: {fileID: 2100000, guid: 68e39faed3815c840afb6c6599dce85d, type: 2}
   role: 0
   items:
   - {fileID: 2779576765864611902}

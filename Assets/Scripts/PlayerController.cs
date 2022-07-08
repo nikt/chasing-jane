@@ -16,6 +16,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
     [SerializeField] float mouseSensitivity, sprintSpeed, walkSpeed, jumpForce, smoothTime;
 
+    // damage and materials
+    [SerializeField] Material damageMaterial;
+    Material originalMaterial;
+    MeshRenderer meshRenderer;
+
     public Role role;
 
     [SerializeField] Item[] items;
@@ -92,6 +97,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
             // Destroy(rb);
             rb.isKinematic = true;
         }
+
+        // save renderer and material
+        meshRenderer = GetComponent<MeshRenderer>();
+        originalMaterial = meshRenderer.material;
     }
 
     void Update()
@@ -279,7 +288,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         if (PV.IsMine)
         {
             Hashtable hash = new Hashtable();
-            hash.Add(PlayerProperties.TIME_HELD, itemIndex);
+            hash.Add(PlayerProperties.ITEM_INDEX, itemIndex);
             PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
         }
     }
@@ -296,6 +305,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     {
         // only send to the owner of this player controller
         PV.RPC(nameof(RPC_TakeDamage), PV.Owner, damage);
+
+        StartCoroutine(NotifyDamageAll());
     }
 
     [PunRPC]
@@ -313,7 +324,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         }
         else
         {
-            StartCoroutine(NotifyDamage());
+            StartCoroutine(NotifyDamageSelf());
         }
     }
 
@@ -348,11 +359,19 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
     // Coroutines
 
-    IEnumerator NotifyDamage()
+    IEnumerator NotifyDamageSelf()
     {
         // flash red vignette
         vignette.color.Override(new Color(1f, 0f, 0f, 1f));
         yield return new WaitForSeconds(.2f);
         vignette.color.Override(new Color(0f, 0f, 0f, 1f));
+    }
+
+    IEnumerator NotifyDamageAll()
+    {
+        // flash red material
+        meshRenderer.material = damageMaterial;
+        yield return new WaitForSeconds(.2f);
+        meshRenderer.material = originalMaterial;
     }
 }
